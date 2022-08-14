@@ -13,6 +13,7 @@ jobs:
   # This workflow contains a single job called "build"
   build:
     strategy:
+      max-parallel: 1
       matrix:
         version: [1.18, 1.19]
     # The type of runner that the job will run on
