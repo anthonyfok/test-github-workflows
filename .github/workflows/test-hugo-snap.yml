@@ -1,0 +1,25 @@
+name: Test Hugo Snap
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-hugo-snap:
+    strategy:
+      matrix:
+        os: [ubuntu-20.04, ubuntu-22.04]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: jmooring/hugo-snap-test
+          fetch-depth: 0
+      - name: Whitelist pandoc, rst2html and asciidoctor in config/_default/config.toml
+        run: |
+          echo '[security]' >> config/_default/config.toml
+          echo '  [security.exec]' >> config/_default/config.toml
+          echo "    allow = ['^dart-sass-embedded$', '^go$', '^npx$', '^postcss$', '^asciidoctor$', '^pandoc$', '^rst2html$']" >> config/_default/config.toml
+
+      - run: sudo snap install hugo
+      - run: npm install
+      - run: snap run hugo
